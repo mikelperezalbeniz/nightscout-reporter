@@ -910,7 +910,7 @@ class InsulinInjectionList {
 
   fromJsonString(String json)
   {
-    injections= Map();
+    injections = Map();
     List<dynamic> decoded = JsonCodec().decode(json);
     double sum = 0;
     for (dynamic inj in decoded) {
@@ -918,6 +918,11 @@ class InsulinInjectionList {
       sum += u;
       injections.update(JsonData.toText(inj["insulin"]), (double v) => v + u, ifAbsent: () => u);
     }
+    injections.update("sum", (double v) => v + sum, ifAbsent: () => sum);
+  }
+  fromSumValue(double sum)
+  {
+    injections = Map();
     injections.update("sum", (double v) => v + sum, ifAbsent: () => sum);
   }
 
@@ -1081,6 +1086,7 @@ class TreatmentData extends JsonData {
     ret.multipleInsulin = InsulinInjectionList();
     if (json.containsKey("insulinInjections"))
       ret.multipleInsulin.fromJsonString(json["insulinInjections"]);
+    else ret.multipleInsulin.fromSumValue(ret.insulin);   // falls wir an dem Tag keine insulinInjections haben
     if (ret.insulin == 0.0) ret.insulin = JsonData.toDouble(json["enteredinsulin"]);
     ret.splitExt = JsonData.toInt(json["splitExt"]);
     ret.splitNow = JsonData.toInt(json["splitNow"]);

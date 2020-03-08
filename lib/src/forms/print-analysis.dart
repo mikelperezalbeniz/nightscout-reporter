@@ -637,6 +637,7 @@ class PrintAnalysis extends BasePrint
         ],
       ];
 
+    if (sum.injections.keys.toList().length > 1) // sum ist ja immer drin, also gehts darum ob insulinInjections gefüllt sind oder nicht
     for (String insulin in sum.injections.keys)
       if (insulin.toLowerCase() != "sum")
       {
@@ -648,6 +649,37 @@ class PrintAnalysis extends BasePrint
               {"text": "", "style": "infotitle"},
               {"text": "", "style": "infounit"},
             ]);
+      }
+    else
+      {   // "alte" Inhalte wenn keine insulinInjections
+        treatmentsBody.add(
+          [
+            {"text": "", "style": "infotitle"},
+            {"text": msgBolusPerDay, "style": "infotitle"},
+            {"text": "${g.fmtNumber(data.ieBolusSum / repData.dayCount, 1)}", "style": "infodata"},
+            {"text": "bolus (${g.fmtNumber(data.ieBolusPrz, 1)} %)", "style": "infounit", "colSpan": 2},
+            {"text": "", "style": "infotitle"},
+            {"text": "", "style": "infounit"},
+          ]);
+        treatmentsBody.add(
+          [
+            {"text": "", "style": "infotitle"},
+            {"text": msgBasalPerDay, "style": "infotitle"},
+            {"text": "${g.fmtNumber(data.ieBasalSum / repData.dayCount, 1)}", "style": "infodata"},
+            {"text": "basal (${g.fmtNumber(data.ieBasalPrz, 1)} %)", "style": "infounit", "colSpan": 2},
+            {"text": "", "style": "infotitle"},
+            {"text": "", "style": "infounit"},
+          ]);
+        treatmentsBody.add(
+          [
+            {"@": data.ieMicroBolusSum > 0.0},
+            {"text": "", "style": "infotitle"},
+            {"text": msgMicroBolusPerDay, "style": "infotitle"},
+            {"text": "${g.fmtNumber(data.ieMicroBolusSum / repData.dayCount, 1)}", "style": "infodata"},
+            {"text": "bolus (${g.fmtNumber(data.ieMicroBolusPrz, 1)} %)", "style": "infounit", "colSpan": 2},
+            {"text": "", "style": "infotitle"},
+            {"text": "", "style": "infounit"},
+          ]);
       }
     addBodyArea(tableBody, msgTreatments, treatmentsBody);
 
