@@ -638,19 +638,30 @@ class PrintAnalysis extends BasePrint
       ];
 
     if (sum.injections.keys.toList().length > 1) // sum ist ja immer drin, also gehts darum ob insulinInjections gefüllt sind oder nicht
-    for (String insulin in sum.injections.keys)
-      if (insulin.toLowerCase() != "sum")
-      {
-        treatmentsBody.add(
-            [ {"text": "", "style": "infotitle"},
-              {"text": "Ø " + insulin + Intl.message(" pro Tag"), "style": "infotitle"},
-              {"text": "${g.fmtNumber(sum.injections[insulin] / repData.dayCount, 1)} ", "style": "infodata"},
-              {"text": "${msgInsulinUnit}", "style": "infounit", "colSpan": 2},
-              {"text": "", "style": "infotitle"},
-              {"text": "", "style": "infounit"},
-            ]);
-      }
-    else
+    {
+      for (String insulin in sum.injections.keys)
+        if (insulin.toLowerCase() != "sum") {
+          treatmentsBody.add(
+              [ {"text": "", "style": "infotitle"},
+                {
+                  "text": "Ø " + insulin + Intl.message(" pro Tag"),
+                  "style": "infotitle"
+                },
+                {
+                  "text": "${g.fmtNumber(
+                      sum.injections[insulin] / repData.dayCount, 1)} ",
+                  "style": "infodata"
+                },
+                {
+                  "text": "${msgInsulinUnit}",
+                  "style": "infounit",
+                  "colSpan": 2
+                },
+                {"text": "", "style": "infotitle"},
+                {"text": "", "style": "infounit"},
+              ]);
+        }
+    } else
       {   // "alte" Inhalte wenn keine insulinInjections
         treatmentsBody.add(
           [
