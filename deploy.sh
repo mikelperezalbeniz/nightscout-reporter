@@ -34,8 +34,8 @@ unrar x nr-pdfmake.rar $INSTALLDIR
 tar -cvzf /tmp/NightScoutReporter.tar.gz -C $INSTALLDIR .
 typeset TARGETLOCATION
 [ "$2" == "dev" ] && TARGETLOCATION=myroot@devubuntu:/home/myroot/Software/NightScoutReporter
-[ "$2" == "ref" ] && TARGETLOCATION=myroot@devubuntu:/home/myroot/Software/NightScoutReporter
-[ "$2" == "prod" ] && TARGETLOCATION=myroot@devubuntu:/home/myroot/Software/NightScoutReporter
+[ "$2" == "ref" ] && TARGETLOCATION=myroot@nightscout-stage:/home/myroot/Software/NightScoutReporter
+[ "$2" == "prod" ] && TARGETLOCATION=myroot@nightscout:/home/myroot/Software/NightScoutReporter
 echo 
 echo "======================"
 echo "deploying to $TARGETLOCATION"
