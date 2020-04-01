@@ -3,6 +3,10 @@
 typeset PUB=/usr/lib/dart/bin/pub
 export https_proxy="http://10.230.1.1:8080"
 export no_proxy="127.0.0.1,localhost"
+typeset TARGETHOST
+[ "$2" == "dev" ] && TARGETHOST=devubuntu
+[ "$2" == "ref" ] && TARGETHOST=nightscout-stage
+[ "$2" == "prod" ] && TARGETHOST=nightscout
 if [ "$1" == "all" ]
 then
   echo "======================"
@@ -14,6 +18,10 @@ fi
 
 if [ "$1" == "all" -o "$1" == "build" ]
 then
+  echo 
+  echo "======================"
+  echo "applying stage"
+  echo "======================"
   echo 
   echo "======================"
   echo "running build"
@@ -32,10 +40,7 @@ cp -r build/* $INSTALLDIR
 cp settings.json $INSTALLDIR
 unrar x nr-pdfmake.rar $INSTALLDIR
 tar -cvzf /tmp/NightScoutReporter.tar.gz -C $INSTALLDIR .
-typeset TARGETLOCATION
-[ "$2" == "dev" ] && TARGETLOCATION=myroot@devubuntu:/home/myroot/Software/NightScoutReporter
-[ "$2" == "ref" ] && TARGETLOCATION=myroot@nightscout-stage:/home/myroot/Software/NightScoutReporter
-[ "$2" == "prod" ] && TARGETLOCATION=myroot@nightscout:/home/myroot/Software/NightScoutReporter
+typeset TARGETLOCATION=myroot@$TARGETHOST:/home/myroot/Software/NightScoutReporter
 echo 
 echo "======================"
 echo "deploying to $TARGETLOCATION"
