@@ -4,7 +4,7 @@ typeset PUB=/usr/lib/dart/bin/pub
 export https_proxy="http://10.230.1.1:8080"
 export no_proxy="127.0.0.1,localhost"
 typeset TARGETHOST
-typeset TEMPLATES2APPLY="lib/app_component.dart.template lib/src/globals.dart.template settings.json.template"
+typeset FILES2STAGE="lib/app_component.dart lib/src/globals.dart settings.json"
 [ "$2" == "dev" ] && TARGETHOST=devubuntu.home.local
 [ "$2" == "ref" ] && TARGETHOST=nightscout-stage.home.local
 [ "$2" == "prod" ] && TARGETHOST=nightscout.home.local
@@ -23,9 +23,10 @@ then
   echo "======================"
   echo "applying stage"
   echo "======================"
-  for TEMPLATE in $TEMPLATES2APPLY
+  for FILE in $FILES2STAGE
   do
-    sed -e"s/__NSR_HOST__/$TARGETHOST/g" < $TEMPLATE > $(echo $TEMPLATE | sed -e"s/.template//g")
+    sed -e"s/http:\/\/.*\/NightScoutReporter\//http:\/\/$TARGETHOST\/NightScoutReporter\//g" < $FILE > /tmp/nsr.stage
+    [ $? -eq 0 ] && cp /tmp/nsr.stage $FILE
   done
   echo 
   echo "======================"
