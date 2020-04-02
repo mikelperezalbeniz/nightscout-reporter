@@ -25,7 +25,7 @@ then
   echo "======================"
   for FILE in $FILES2STAGE
   do
-    sed -e"s/http:\/\/.*\/NightScoutReporter\//http:\/\/$TARGETHOST\/NightScoutReporter\//g" < $FILE > /tmp/nsr.stage
+    sed -e"s/https:\/\/.*\/NightScoutReporter\//https:\/\/$TARGETHOST\/NightScoutReporter\//g" < $FILE > /tmp/nsr.stage
     [ $? -eq 0 ] && cp /tmp/nsr.stage $FILE
   done
   echo 
