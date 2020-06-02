@@ -1,7 +1,6 @@
 {
-  "name": "Node.js Sample",
-  "description": "A barebones Node.js app using Express",
-  "repository": "https://github.com/heroku/node-js-getting-started",
-  "logo": "https://node-js-sample.herokuapp.com/node.png",
-  "keywords": ["node", "express", "static"]
+  "name": "nightscout-reporter",
+  "description": "NightScout pdf report maker",
+  "urlPDF":"http://nightscout-reporter.reptilefarm.ddns.net/pdfmake/pdfmake.php",
+  "urlPlayground":"http://nightscout-reporter.reptilefarm.ddns.net/pdfmake/playground.php"
 }
