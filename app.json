@@ -4,12 +4,5 @@
   "repository": "https://github.com/mikelperezalbeniz/nightscout-reporter",
   "urlPDF":"http://nightscout-reporter.reptilefarm.ddns.net/pdfmake/pdfmake.php",
   "urlPlayground":"http://nightscout-reporter.reptilefarm.ddns.net/pdfmake/playground.php"
-  "buildpacks": [
-    {
-      "url": "https://github.com/heroku/heroku-buildpack-pgbouncer"
-    },
-    {
-      "url": "heroku/ruby"
-    }
-  ]
+  
 }
