@@ -1,6 +1,7 @@
 library diamant.jsonData;
 
 import 'dart:convert' as convert;
+import 'dart:convert';
 import 'dart:math' as math;
 
 import 'package:angular_components/angular_components.dart';
@@ -901,6 +902,42 @@ class BoluscalcData extends JsonData {
   }
 }
 
+class InsulinInjectionList {
+  Map<String, double> injections = Map();
+
+  InsulinInjectionList get copy => InsulinInjectionList()
+      ..injections = new Map.from(injections);
+
+  fromJsonString(String json)
+  {
+    injections = Map();
+    List<dynamic> decoded = JsonCodec().decode(json);
+    double sum = 0;
+    for (dynamic inj in decoded) {
+      double u = JsonData.toDouble(inj["units"]);
+      sum += u;
+      injections.update(JsonData.toText(inj["insulin"]), (double v) => v + u, ifAbsent: () => u);
+    }
+    injections.update("sum", (double v) => v + sum, ifAbsent: () => sum);
+  }
+  fromSumValue(double sum)
+  {
+    injections = Map();
+    injections.update("sum", (double v) => v + sum, ifAbsent: () => sum);
+  }
+
+  InsulinInjectionList add2List(InsulinInjectionList l)
+  {
+    InsulinInjectionList ret = this.copy;
+    for (String insulin in l.injections.keys)
+    {
+      double sum = l.injections[insulin];
+      ret.injections.update(insulin, (double v) => v + sum, ifAbsent: () => sum);
+    }
+    return ret;
+  }
+}
+
 class TreatmentData extends JsonData {
   dynamic raw;
   String id;
@@ -915,6 +952,7 @@ class TreatmentData extends JsonData {
   String NSClientId;
   double _carbs;
   double insulin;
+  InsulinInjectionList multipleInsulin;
   double microbolus;
   int splitExt;
   int splitNow;
@@ -1011,6 +1049,7 @@ class TreatmentData extends JsonData {
     ..NSClientId = NSClientId
     .._carbs = _carbs
     ..insulin = insulin
+    ..multipleInsulin = multipleInsulin
     ..splitExt = splitExt
     ..splitNow = splitNow
     ..microbolus = microbolus
@@ -1050,6 +1089,10 @@ class TreatmentData extends JsonData {
     ret.NSClientId = JsonData.toText(json["NSCLIENT_ID"]);
     ret._carbs = JsonData.toDouble(json["carbs"]);
     ret.insulin = JsonData.toDouble(json["insulin"]);
+    ret.multipleInsulin = InsulinInjectionList();
+    if (json.containsKey("insulinInjections"))
+      ret.multipleInsulin.fromJsonString(json["insulinInjections"]);
+    else ret.multipleInsulin.fromSumValue(ret.insulin);   // falls wir an dem Tag keine insulinInjections haben
     if (ret.insulin == 0.0) ret.insulin = JsonData.toDouble(json["enteredinsulin"]);
     ret.splitExt = JsonData.toInt(json["splitExt"]);
     ret.splitNow = JsonData.toInt(json["splitNow"]);
@@ -1525,10 +1568,10 @@ class CalcCOBData {
   bool isDecaying;
   int carbs_hr;
   double rawCarbImpact;
-  double cob;
+  double cob, cActivity;
   TreatmentData lastCarbs;
 
-  CalcCOBData(this.decayedBy, this.isDecaying, this.carbs_hr, this.rawCarbImpact, this.cob, this.lastCarbs);
+  CalcCOBData(this.decayedBy, this.isDecaying, this.carbs_hr, this.rawCarbImpact, this.cob, this.cActivity, this.lastCarbs);
 }
 
 class DayData {
@@ -1962,7 +2005,7 @@ class DayData {
     double carbRatio = profile.store.listCarbratio.lastWhere((e) => e.timeForCalc <= check, orElse: () => null)?.value ?? 0.0;
     var rawCarbImpact = (isDecaying ? 1 : 0) * sens / carbRatio * profile.store.carbRatioPerHour / 60;
 
-    return CalcCOBData(lastDecayedBy, isDecaying, profile.store.carbRatioPerHour, rawCarbImpact, totalCOB, lastCarbs);
+    return CalcCOBData(lastDecayedBy, isDecaying, profile.store.carbRatioPerHour, rawCarbImpact, totalCOB, 0, lastCarbs);
   }
 }
 
